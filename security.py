@@ -3,8 +3,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 from fastapi.security import OAuth2PasswordBearer
 
-SECRET_KEY = "замените-на-длинную-случайную-строку-и-не-храните-в-коде"
-
+SECRET_KEY = "8eXVw5ATM7RNsCp4+dpk9KpOQJaccy185fb1hrPqko4="#не хранить в коде
 
 def hash_password(password: str):
     pwd_bytes = password.encode("utf-8")
@@ -25,4 +24,4 @@ def create_token(user_id: int):
     }
     return jwt.encode(payload, SECRET_KEY)
 
-oauth2_scheme = OAuth2PasswordBearer("/auth/login")
+oauth2_scheme = OAuth2PasswordBearer("auth/login")

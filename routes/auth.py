@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from database import get_session
+from limiter import limiter
 from models import User
 from schemas import UserRegister
 from security import hash_password, verify_password, create_token
@@ -23,7 +24,6 @@ def register(data: UserRegister, session: Session = Depends(get_session)):
     user = User(
         email=data.email,
         hashed_password=hash_password(data.password),
-        role=data.role
     )
 
     session.add(user)
@@ -33,7 +33,9 @@ def register(data: UserRegister, session: Session = Depends(get_session)):
 
 
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
+    request:Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
 ):
@@ -46,11 +48,4 @@ def login(
 
     return {"access_token": create_token(user.id), "token_type": "bearer"}
 
-
-# /login, /register
-"""
-1) Убрать роль из UserRegister и из создания пользователся user = User...
-2) Создать отдельный маршрут в admin.py PATCH /admin/users/{user_id}/role. Он принимает 
-{"role": "..."} и обновляет роль указнного user_id. ЭТОТ МАРШРУТ ЗАЩИЩЁН АДМИНОМ.
-"""
 
