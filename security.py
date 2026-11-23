@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 from fastapi.security import OAuth2PasswordBearer
 
-SECRET_KEY = "замените-на-длинную-случайную-строку-и-не-храните-в-коде"
+SECRET_KEY = "798798d7afs8df7098sdf9s8df9as8dfsd987ds8af8s"
 
 
 def hash_password(password: str):

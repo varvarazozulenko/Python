@@ -12,7 +12,6 @@ from security import hash_password, verify_password, create_token
 
 router = APIRouter(prefix="/auth")
 
-
 @router.post("/register")
 def register(data: UserRegister, session: Session = Depends(get_session)):
     existing = session.execute(
@@ -50,12 +49,3 @@ def login(
         raise HTTPException(status_code=401, detail="Неверный email или пароль")
 
     return {"access_token": create_token(user.id), "token_type": "bearer"}
-
-
-"""
-FastAPI (маршрут) -> кладёт задачу в очередь -> возвращает ответ клиенту
-                               |
-                            Очередь
-                               |
-                        Celery-воркер  -> выполняет задачу -> иногда сохраняем результат
-"""

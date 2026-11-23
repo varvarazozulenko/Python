@@ -4,14 +4,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from dependencies import get_current_user
 from limiter import limiter
 from models import User
+from schemas import schema
 from routes.auth import router as auth_router
 from routes.admin import router as admin_router
 from routes.tasks import router as tasks_router
 from dependencies import require_role, UserRole
-
+from strawberry.fastapi import GraphQLRouter
 
 app = FastAPI()
-
 app.state.limiter = limiter
 
 app.add_middleware(
@@ -25,6 +25,9 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(tasks_router)
+
+graphql_app = GraphQLRouter(schema)
+app.include_router(graphql_app, prefix="/graphql")
 
 @app.get("/profile")
 def profile(current_user: User = Depends(get_current_user)):
